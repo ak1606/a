@@ -1,0 +1,69 @@
+
+import java.util.Scanner;
+
+public class SpellUtility {
+    private static final int TABLE_SIZE = 100;
+    private static String[] hashTable = new String[TABLE_SIZE];
+
+    // Hash function to calculate the index for a word
+    private static int hashFunction(String word) {
+        int hash = 0;
+        for (int i = 0; i < word.length(); i++) {
+            hash = (hash * 31 + word.charAt(i)) % TABLE_SIZE;
+        }
+        return hash;
+    }
+
+    // Method to add a word to the hash table
+    private static void addWord(String word) {
+        int index = hashFunction(word);
+        hashTable[index] = word;
+        System.out.println("Word added to the hash table.");
+    }
+
+    // Method to search for a word in the hash table
+    private static boolean searchWord(String word) {
+        int index = hashFunction(word);
+        return hashTable[index] != null && hashTable[index].equals(word);
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int choice;
+
+        System.out.println("Welcome to Spell Checker Utility with Hash Table");
+        do {
+            System.out.println("1. Add a word");
+            System.out.println("2. Search for a word");
+            System.out.println("3. Exit");
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter the word to add: ");
+                    String wordToAdd = scanner.nextLine();
+                    addWord(wordToAdd);
+                    break;
+                case 2:
+                    System.out.print("Enter the word to search: ");
+                    String wordToSearch = scanner.nextLine();
+                    if (searchWord(wordToSearch)) {
+                        System.out.println("The word \"" + wordToSearch + "\" is spelled correctly.");
+                    } else {
+                        System.out.println("The word \"" + wordToSearch + "\" is misspelled.");
+                    }
+                    break;
+                case 3:
+                    System.out.println("Exiting the program.");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+                    break;
+            }
+        } while (choice != 3);
+
+        scanner.close();
+    }
+}
