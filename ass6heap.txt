@@ -1,0 +1,65 @@
+
+import java.util.*;
+public class Heap {
+	static void maxHeap(int arr[],int i,int num)
+	{
+		int left = 2 * i;
+		int right = 2 * i + 1;
+		int largest;
+		if(left <= num && arr[left] > arr[i])
+			largest = left;
+		else
+			largest = i;
+		if(right <= num && arr[right] > arr[largest])
+			largest = right;
+		if(largest != i)
+		{
+			int temp = arr[largest];
+			arr[largest] = arr[i];
+			arr[i] = temp;
+		}
+	}
+	static void minHeap(int arr[],int i,int num)
+	{
+		int left = 2 * i;
+		int right = 2 * i + 1;
+		int smallest;
+		if(left <= num && arr[left] < arr[i])
+			smallest = left;
+		else
+			smallest = i;
+		if(right <= num && arr[right] < arr[smallest])
+			smallest = right;
+		if(smallest != i)
+		{
+			int temp = arr[smallest];
+			arr[smallest] = arr[i];
+			arr[i] = temp;
+		}
+	}
+	public static void main(String[] args)
+	{
+		Scanner sc = new Scanner(System.in);
+		int num,maxMarks,minMarks;
+		System.out.print("Enter number of students:");
+		num = sc.nextInt();
+		int[] arr = new int[num + 1];
+		System.out.print("Enter the marks of the " + num + " students:");
+		for(int i = 1; i <= num; i++)
+		{
+			arr[i] = sc.nextInt();
+		}
+		for(int i = num/2; i > 0; --i)
+		{
+			minHeap(arr,i,num);
+		}
+		minMarks = arr[1];
+		for(int i = num/2; i > 0; --i)
+		{
+			maxHeap(arr,i,num);
+		}
+		maxMarks = arr[1];
+		System.out.println("Maximum marks obtained in the subject: " + maxMarks);
+		System.out.println("Minimum marks obtained in the subject: " + minMarks);
+	}
+}

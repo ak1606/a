@@ -1,0 +1,133 @@
+package ads;
+import java.util.*;
+public class Bst {
+	static class Node{
+		int data;
+		Node left;
+		Node right;
+		
+		Node(int data)
+		{
+			this.data = data;
+		}
+	}
+	static Node insert(Node root,int data) {
+		if(root == null)
+		{
+			root = new Node(data);
+			return root;
+		}
+		if(root.data > data)
+		{
+			root.left = insert(root.left,data);
+		}
+		else
+		{
+			root.right = insert(root.right,data);
+		}
+		return root;
+	}
+	static Node delete(Node root,int val)
+	{
+		if(root.data > val)
+			root.left = delete(root.left,val);
+		else if(root.data < val)
+			root.right = delete(root.right,val);
+		else 
+		{
+			if(root.left == null && root.right == null) {
+				return null;
+			}
+			else if(root.left == null) {
+				return root.right;
+			}
+			else if(root.right == null) {
+				return root.left;
+			}
+			else {
+				Node IS = inorderSuccessor(root.right);
+				root.data = IS.data;
+				root.right = delete(root.right,IS.data);
+			}
+		}
+		return root;
+	}
+	static Node inorderSuccessor(Node root)
+	{
+		while(root != null)
+		{
+			root = root.left;
+		}
+		return root;
+	}
+	static void inOrder(Node root)
+	{
+		if(root == null)
+			return ;
+		inOrder(root.left);
+		System.out.print(root.data + " ");
+		inOrder(root.right);
+	}
+	static boolean search(Node root,int key)
+	{
+		if(root == null)
+			return false;
+		if(root.data == key)
+			return true;
+		else if(root.data > key)
+			return search(root.left,key);
+		else
+			return search(root.right,key);
+	}
+	static public void main(String[] args)
+	{
+		Scanner sc = new Scanner(System.in);
+		int option = 0,flag = 1;
+		Node root = null;
+		while(flag == 1)
+		{
+			System.out.println("Select Operation:");
+			System.out.println("1.Insert");
+			System.out.println("2.Delete");
+			System.out.println("3.Display Tree");
+			System.out.println("4.Search");
+			System.out.println("5.Exit");
+			option = sc.nextInt();
+			switch(option)
+			{
+				case 1:
+					int data;
+					System.out.print("Enter elemented to be added:");
+					data = sc.nextInt();
+					root = insert(root,data);
+					break;
+				case 2:
+					int val;
+					System.out.print("Enter elemented to be Deleted:");
+					val = sc.nextInt();
+					delete(root,val);
+					break;
+				case 3:
+					inOrder(root);
+					System.out.println();
+					break;
+				case 4:
+					int key;
+					System.out.print("Enter elemented to be Searched:");
+					key = sc.nextInt();
+					if(search(root,key))
+					{
+						System.out.print("Element FOUND..");
+					}
+					else
+						System.out.print("Element NOT FOUND..");
+					break;
+				case 5:
+					flag = 0;
+					break;
+				default:
+					System.out.println("Invalid option.");
+			}
+		}
+	}
+}

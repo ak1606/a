@@ -1,0 +1,180 @@
+
+
+import java.io.*;
+import java.util.Scanner;
+
+class Student {
+    private int rollNumber;
+    private String name;
+    private int gradeNumber;
+    private String className;
+
+    public Student(int rollNumber, String name, int percent, String className) {
+        this.rollNumber = rollNumber;
+        this.name = name;
+        this.gradeNumber = percent;
+        this.className = className;
+    }
+
+    public int getRollNumber() {
+        return rollNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getGradeNumber() {
+        return gradeNumber;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    @Override
+    public String toString() {
+        return "Roll Number: " + rollNumber +
+                ", Name: " + name +
+                ", Percentage: " + gradeNumber +
+                ", Class Name: " + className;
+    }
+}
+
+public class StudentDatabase {
+    private static final String FILE_NAME = "student_database.txt";
+
+    public static void addStudent(Student student) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(FILE_NAME, true))) {
+            writer.println(student.getRollNumber() + "," + student.getName() + "," +
+                    student.getGradeNumber() + "," + student.getClassName());
+            System.out.println("Student added successfully.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void searchStudent(int rollNumber) {
+        boolean found = false;
+        try (Scanner scanner = new Scanner(new File(FILE_NAME))) {
+            while (scanner.hasNextLine()) {
+                String[] data = scanner.nextLine().split(",");
+                if (Integer.parseInt(data[0]) == rollNumber) {
+                    System.out.println("Student found:");
+                    System.out.println("Roll Number: " + data[0]);
+                    System.out.println("Name: " + data[1]);
+                    System.out.println("Percentage: " + data[2]);
+                    System.out.println("Class Name: " + data[3]);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                System.out.println("Student with roll number " + rollNumber + " not found.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteStudent(int rollNumber) {
+        File inputFile = new File(FILE_NAME);
+        File tempFile = new File("temp.txt");
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+             PrintWriter writer = new PrintWriter(new FileWriter(tempFile))) {
+
+            String currentLine;
+
+            while ((currentLine = reader.readLine()) != null) {
+                String[] data = currentLine.split(",");
+                if (Integer.parseInt(data[0]) != rollNumber) {
+                    writer.println(currentLine);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (inputFile.delete()) {
+            if (!tempFile.renameTo(inputFile)) {
+                System.out.println("Error renaming file.");
+            }
+        } else {
+            System.out.println("Error deleting file.");
+        }
+    }
+    
+    public static void displayAllStudents() {
+        try (Scanner scanner = new Scanner(new File(FILE_NAME))) {
+            System.out.println("List of all students:");
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] data = line.split(",");
+                if (data.length >= 4) { // Ensure array has at least 4 elements
+                    Student student = new Student(Integer.parseInt(data[0]), data[1], Integer.parseInt(data[2]), data[3]);
+                    System.out.println(student);
+                } else {
+                    System.out.println("Invalid data format: " + line);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        char choice;
+        do {
+            System.out.println("Select operation:");
+            System.out.println("1. Add Student");
+            System.out.println("2. Search Student");
+            System.out.println("3. Delete Student");
+            System.out.println("4. Display all Student");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice: ");
+            int option = scanner.nextInt();
+            scanner.nextLine();
+            switch (option) {
+                case 1:
+                    System.out.print("Enter Roll Number: ");
+                    int rollNumber = scanner.nextInt();
+                    scanner.nextLine();
+                    System.out.print("Enter Name: ");
+                    String name = scanner.nextLine();
+                    System.out.print("Enter Percentage: ");
+                    int gradeNumber = scanner.nextInt();
+                    scanner.nextLine();
+                    System.out.print("Enter Class Name: ");
+                    String className = scanner.nextLine();
+                    addStudent(new Student(rollNumber, name, gradeNumber, className));
+                    break;
+                case 2:
+                    System.out.print("Enter Roll Number to search: ");
+                    int searchRollNumber = scanner.nextInt();
+                    searchStudent(searchRollNumber);
+                    break;
+                case 3:
+                    System.out.print("Enter Roll Number to delete: ");
+                    int deleteRollNumber = scanner.nextInt();
+                    deleteStudent(deleteRollNumber);
+                    System.out.println("Student deleted successfully.");
+                    break;
+                case 4:
+                    displayAllStudents();
+                    break;
+                case 5:
+                	System.exit(0);
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please select again.");
+            }
+            System.out.print("Do you want to perform another operation? (y/n): ");
+            choice = scanner.next().charAt(0);
+            scanner.nextLine();
+        } while (choice == 'y' || choice == 'Y');
+    }
+}

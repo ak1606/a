@@ -1,0 +1,113 @@
+import java.util.*;
+
+public class Assig2 {
+
+class Node {
+int data;
+Node left, right;
+boolean rightThread;
+
+public Node(int data) {
+this.data = data;
+this.left = right = null;
+this.rightThread = false;
+}
+}
+
+Node root = null;
+
+public void inorder() {
+Node current = leftMost(root);
+while (current != null) {
+System.out.print(current.data + " ");
+if (current.rightThread)
+current = current.right;
+else
+current = leftMost(current.right);
+}
+}
+
+public Node leftMost(Node node) {
+if (node == null)
+return null;
+while (node.left != null) {
+node = node.left;
+}
+return node;
+}
+
+public void insert(int data) {
+Node newNode = new Node(data);
+if (root == null) {
+root = newNode;
+return;
+}
+Node current = root;
+while (true) {
+if (data < current.data) {
+if (current.left == null) {
+current.left = newNode;
+newNode.rightThread = true;
+newNode.right = current;
+return;
+}
+current = current.left;
+} else {
+if (current.rightThread) {
+newNode.right = current.right;
+current.right = newNode;
+current.rightThread = false;
+newNode.rightThread = true;
+return;
+}
+if (current.right == null) {
+current.right = newNode;
+return;
+}
+current = current.right;
+}
+}
+}
+
+public static void main(String[] args) {
+Scanner sc = new Scanner(System.in);
+Assig2 tree1 = new Assig2();
+System.out.println("************Threaded BST operations**************");
+System.out.println("\n***********************************************");
+boolean x = true;
+while (x) {
+System.out.println("Operations available: ");
+System.out.println("1. Insert the data in TBT \n2. Inorder print \n3. Exit");
+System.out.println("First Insert the data: ");
+System.out.println();
+System.out.println("Enter your choice: ");
+int choice = sc.nextInt();
+switch (choice) {
+case 1:
+System.out.println("Enter the data (-1 to stop):");
+int data = sc.nextInt();
+while (data != -1) {
+tree1.insert(data);
+data = sc.nextInt();
+}
+System.out.println("Successfully Inserted.");
+System.out.println("**********************");
+break;
+
+case 2:
+System.out.println("The inorder traversal is :");
+tree1.inorder();
+System.out.println("***************************");
+break;
+
+case 3:
+x = false;
+break;
+
+default:
+System.out.println("Enter valid choice:");
+break;
+}
+}
+}
+}

@@ -1,0 +1,111 @@
+package ads;
+import java.util.*;
+public class HashTable {
+	static void linearProbing(int arr[],int size,int element)
+	{
+		int loc = element % size;
+		if(arr[loc] == -1)
+			arr[loc] = element;
+		else {
+			while(loc < size)
+			{
+				if(arr[loc] == -1)
+				{
+					arr[loc] = element;
+					break;
+				}
+				else
+					loc++;
+			}
+			if(loc >= size)
+				System.out.print("Hash table is full...\n");
+		}
+	}
+	static void delete(int arr[],int size,int key)
+	{
+		int loc = search(arr,size,key);
+		if(loc != -2)
+		{
+			arr[loc] = -2;
+			System.out.print("The element " +key+ " is Deleted from the Hash Table\n");
+		}
+		else
+			System.out.print("The element " +key+ " is not present in the Hash Table\n");
+			
+	}
+	static int search(int arr[],int size,int key)
+	{
+		int loc = key % size;
+		while(loc < size)
+		{
+			if(arr[loc] == key)
+			{
+				System.out.print("The element " +key+ " is present in the Hash Table\n");
+				return loc;
+			}
+			else if(arr[loc] == -1)
+			{
+				System.out.print("The element " +key+ " is not present in the Hash Table\n");
+				return -2;
+			}
+			else
+				loc++;
+		}
+		return -2;
+	}
+	public static void main(String args[])
+	{
+		Scanner sc = new Scanner(System.in);
+		int size;
+		System.out.print("Enter the size of the hash table:");
+		size = sc.nextInt();
+		int[] arr = new int[size];
+		for(int i = 0; i < size; ++i)
+		{
+			arr[i] = -1;
+		}
+		int flag = 1,option;
+		while(flag == 1)
+		{
+			System.out.println("Select Operation:");
+			System.out.println("1.Add.");
+			System.out.println("2.Delete.");
+			System.out.println("3.Display.");
+			System.out.println("4.Search.");
+			System.out.println("5.Exit.");
+			option = sc.nextInt();
+			switch(option)
+			{
+				case 1:
+					int data;
+					System.out.print("Enter elemented to be added:");
+					data = sc.nextInt();
+					linearProbing(arr,size,data);
+					break;
+				case 2:
+					int key;
+					System.out.print("Enter elemented to be deleted:");
+					key = sc.nextInt();
+					delete(arr,size,key);
+					break;
+				case 3:
+					for(int i = 0; i < size; ++i)
+					{
+						System.out.print(arr[i] + " ");
+					}
+					break;
+				case 4:
+					int val;
+					System.out.print("Enter elemented to be searched:");
+					val = sc.nextInt();
+					search(arr,size,val);
+					break;
+				case 5:
+					flag = 0;
+					break;
+				default:
+					System.out.println("Invalid option.");
+			}
+		}
+	}
+}
