@@ -1,0 +1,77 @@
+package ads;
+import java.util.*;
+import java.util.Arrays;
+public class Kruskal {
+	static class Edge{
+		int source;
+		int dest;
+		int wt;
+	}
+	static class EdgeComparator implements Comparator<Edge> {
+        @Override
+        public int compare(Edge e1, Edge e2) {
+            return Integer.compare(e1.wt, e2.wt);
+        }
+    }
+	
+	static int findParent(int v,int[] parent)
+	{
+		if(parent[v] == v)
+			return v;
+		return findParent(parent[v],parent);
+	}
+
+    static void kruskal(Edge[] arr, int n,int E) {
+        Arrays.sort(arr, 0, E, new EdgeComparator());
+        Edge[] output = new Edge[n - 1];
+        
+        int[] parent = new int[n];
+        for(int i = 0; i < n; ++i)
+        {
+        	parent[i] = i;
+        }
+        
+        int count = 0;
+        int i = 0;
+        while(count < n - 1)
+        {
+        	Edge current = arr[i];
+        	
+        	int sourceParent = findParent(current.source,parent);
+        	int destParent = findParent(current.dest,parent);
+        	
+        	if(sourceParent != destParent)
+        	{
+        		output[count] = current;
+        		count++;
+        		parent[sourceParent] = destParent;
+        	}
+        	i++;
+        }
+        for(int j = 0; j < n - 1; ++j)
+        {
+        	System.out.println(output[j].source+" "+output[j].dest+" "+output[j].wt);
+        }
+    }
+	public static void main(String[] args)
+	{
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Enter the number of vertices:");
+		int n = sc.nextInt();
+		System.out.println("Enter the number of Edges:");
+		int E = sc.nextInt();
+		Edge[] arr = new Edge[E];
+		for(int i = 0; i < E; ++i)
+		{
+			arr[i] = new Edge();
+			int s,d,w;
+			s = sc.nextInt();
+			d = sc.nextInt();
+			w = sc.nextInt();
+			arr[i].source = s;
+			arr[i].dest = d;
+			arr[i].wt = w;
+		}
+		kruskal(arr,n,E);
+	}
+}
